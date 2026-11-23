@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>신나는 유아 수학 놀이터</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Jua&display=swap');
+    * { box-sizing: border-box; font-family: 'Jua', sans-serif; -webkit-tap-highlight-color: transparent; }
+    body { margin: 0; padding: 0; background: #FFF9EC; color: #333; min-height: 100vh; }
+    header { background: linear-gradient(135deg, #FF8C42, #FF5E5B); color: #fff; padding: 14px 18px; font-size: 1.4rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
+    .header-right { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .voice-wrap { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+    .voice-select { background: rgba(255,255,255,0.95); color: #333; border: 2px solid #FFE082; padding: 6px 12px; border-radius: 16px; font-size: 0.95rem; cursor: pointer; outline: none; }
+    .voice-status { font-size: 0.82rem; background: rgba(0,0,0,0.18); padding: 4px 10px; border-radius: 12px; color: #FFFDF7; max-width: 240px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .star-badge { background: #FFD166; color: #5A3A00; padding: 6px 14px; border-radius: 20px; font-size: 1.05rem; }
+    nav { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; padding: 12px; background: #FFF1D0; }
+    @media (min-width: 720px) { nav { grid-template-columns: repeat(5, 1fr); } }
+    .nav-btn { background: #fff; border: 3px solid #FFD166; border-radius: 16px; padding: 10px 6px; font-size: 1rem; cursor: pointer; color: #444; }
+    .nav-btn.active { background: #FF7A00; color: #fff; border-color: #D96500; }
+    main { padding: 18px; max-width: 940px; margin: 0 auto; }
+    .section { display: none; }
+    .section.active { display: block; }
+    h2 { text-align: center; color: #E06000; font-size: 1.5rem; margin-top: 0; }
+    h3 { color: #D96500; margin: 18px 0 10px; font-size: 1.2rem; }
+    .back-bar { display: flex; justify-content: flex-start; margin-bottom: 14px; }
+    .back-btn { background: #6C757D; color: #fff; border: none; padding: 10px 18px; border-radius: 14px; font-size: 1.1rem; cursor: pointer; box-shadow: 0 3px 0 #495057; }
+
+    /* 1~100 숫자 그리드 */
+    .grid-numbers { display: grid; grid-template-columns: repeat(auto-fill, minmax(74px, 1fr)); gap: 10px; margin-bottom: 20px; }
+    .num-card { background: #fff; border: 3px solid #4ECDC4; border-radius: 18px; padding: 12px 6px; text-align: center; font-size: 1.8rem; cursor: pointer; box-shadow: 0 4px 0 #3AB7AE; }
+    .num-card.tens { border-color: #FF8C42; box-shadow: 0 4px 0 #E0732C; background: #FFFDF7; }
+    .num-card.hundred { border-color: #9B5DE5; box-shadow: 0 4px 0 #7B3FC4; background: #FAF5FF; }
+    .num-sub { display: block; font-size: 0.82rem; color: #666; margin-top: 3px; }
+
+    .solo-view { background: #fff; border: 4px solid #FFD166; border-radius: 28px; padding: 32px 20px; text-align: center; box-shadow: 0 8px 20px rgba(0,0,0,0.08); }
+    .solo-big-char { font-size: 6.5rem; line-height: 1.15; color: #FF7A00; margin: 10px 0; }
+    .solo-sub { font-size: 1.55rem; color: #555; margin-bottom: 18px; }
+    .dot-visual { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; max-width: 520px; margin: 0 auto 22px; padding: 14px; background: #FFF9EC; border-radius: 20px; border: 2px dashed #FFD166; }
+    .dot-item { font-size: 1.4rem; line-height: 1.1; }
+
+    /* 덧셈·뺄셈 연습기 */
+    .top-category-bar { background: #FFF2D6; border: 3px solid #FFD166; border-radius: 22px; padding: 14px 16px; margin-bottom: 16px; display: flex; flex-direction: column; align-items: center; gap: 12px; }
+    .cat-tabs { display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; }
+    .cat-btn { padding: 10px 16px; border-radius: 20px; border: none; background: #E6E6E6; font-size: 1.02rem; cursor: pointer; color: #444; }
+    .cat-btn.active { background: #FF5E5B; color: #fff; box-shadow: 0 3px 0 #C9423F; }
+    .calc-card { background: #fff; border: 4px solid #4ECDC4; border-radius: 26px; padding: 26px 18px; text-align: center; box-shadow: 0 6px 16px rgba(0,0,0,0.08); }
+    .calc-mode-badge { display: inline-block; background: #E0F7FA; color: #00796B; padding: 5px 14px; border-radius: 14px; font-size: 1rem; margin-bottom: 10px; }
+    .problem-expr { font-size: clamp(2.4rem, 7vw, 4.4rem); color: #FF7A00; margin: 10px 0 18px; letter-spacing: 2px; }
+    .answer-box { display: flex; justify-content: center; align-items: center; gap: 14px; flex-wrap: wrap; margin-bottom: 18px; }
+    /* 정답 적기 칸 2배 확대 */
+    .answer-input { width: min(360px, 90vw); padding: 18px 20px; font-size: 4.2rem; line-height: 1.1; text-align: center; border: 4px solid #3A86FF; border-radius: 22px; outline: none; background: #F8FBFF; color: #1E3A8A; }
+    .confirm-big-btn { padding: 20px 28px; font-size: 1.45rem; }
+
+    /* 직접 필기 패드 */
+    .handwrite-box { max-width: 540px; margin: 16px auto; background: #FFFDF7; border: 3px solid #FFD166; border-radius: 22px; padding: 14px; }
+    .handwrite-top-bar { display: flex; align-items: center; justify-content: flex-start; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+    .handwrite-title { font-size: 1.05rem; color: #B45309; }
+    #calcHandwriteCanvas { width: 100%; max-width: 500px; height: 180px; border: 3px dashed #4ECDC4; border-radius: 16px; background: #fff; touch-action: none; cursor: crosshair; display: block; margin: 0 auto; }
+
+    .numpad { display: grid; grid-template-columns: repeat(5, minmax(52px, 72px)); justify-content: center; gap: 8px; max-width: 420px; margin: 14px auto; }
+    .pad-btn { padding: 12px 6px; font-size: 1.35rem; border-radius: 14px; border: 2px solid #FFD166; background: #FFFDF7; color: #333; cursor: pointer; box-shadow: 0 3px 0 #E6BE60; }
+    .pad-btn:active { transform: translateY(2px); }
+    .pad-btn.clear-btn { background: #FFE5E5; border-color: #FF8A8A; box-shadow: 0 3px 0 #E06C6C; color: #B91C1C; }
+    .hint-panel { background: #FFF9EC; border: 2px dashed #FFD166; border-radius: 18px; padding: 14px; margin: 14px auto; max-width: 560px; font-size: 1.15rem; color: #555; display: none; }
+    .feedback-text { font-size: 1.35rem; min-height: 34px; margin-top: 12px; }
+
+    /* 구구단 */
+    .dan-selector { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-bottom: 16px; }
+    .dan-btn { padding: 10px 16px; font-size: 1.15rem; border-radius: 16px; border: 3px solid #FFD166; background: #fff; cursor: pointer; color: #444; }
+    .dan-btn.active { background: #FF7A00; color: #fff; border-color: #D96500; }
+    .gugu-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(195px, 1fr)); gap: 12px; }
+    .gugu-card { background: #fff; border: 3px solid #4ECDC4; border-radius: 20px; padding: 16px 12px; text-align: center; box-shadow: 0 4px 0 #3AB7AE; cursor: pointer; }
+    .gugu-eq { font-size: 1.65rem; color: #333; }
+    .gugu-ans { font-size: 2rem; color: #FF5E5B; margin-top: 4px; }
+    .gugu-mini-actions { margin-top: 8px; display: flex; justify-content: center; gap: 6px; }
+    .tiny-btn { padding: 5px 10px; font-size: 0.9rem; border-radius: 10px; border: none; background: #EEF2FF; color: #1E40AF; cursor: pointer; }
+
+    .action-btn { background: #FF7A00; color: #fff; border: none; padding: 12px 20px; font-size: 1.1rem; border-radius: 16px; margin: 6px 4px; cursor: pointer; box-shadow: 0 4px 0 #C85500; }
+    .action-btn.blue { background: #3A86FF; box-shadow: 0 4px 0 #2667CC; }
+    .action-btn.green { background: #2EC4B6; box-shadow: 0 4px 0 #1F8E83; }
+    .mini-btn { padding: 8px 14px; font-size: 1.05rem; border-radius: 12px; border: 2px solid #DDD; background: #FAFAFA; cursor: pointer; }
+
+    /* 퀴즈 & 공부방 */
+    .quiz-box { background: #fff; border-radius: 24px; padding: 25px; text-align: center; box-shadow: 0 6px 15px rgba(0,0,0,0.08); }
+    .quiz-tag { display: inline-block; background: #FFF1D0; color: #D96500; padding: 4px 12px; border-radius: 12px; font-size: 1rem; margin-bottom: 8px; }
+    .quiz-question { font-size: clamp(2.2rem, 6.5vw, 3.8rem); color: #FF7A00; margin: 10px 0 14px; }
+    .quiz-options { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 18px; }
+    .quiz-opt-btn { background: #FFF9EC; border: 3px solid #FFD166; border-radius: 18px; padding: 18px 10px; font-size: 1.7rem; cursor: pointer; }
+    .stats-card { background: #fff; border-radius: 24px; padding: 25px; text-align: center; box-shadow: 0 6px 15px rgba(0,0,0,0.08); }
+    .sticker-board { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin-top: 20px; font-size: 2.5rem; background: #FFF5E4; padding: 20px; border-radius: 20px; min-height: 100px; }
+  </style>
+</head>
+<body>
+  <header>
+    <div>🧮 신나는 수학 놀이터</div>
+    <div class="header-right">
+      <div class="voice-wrap">
+        <select id="voiceProfileSelect" class="voice-select" onchange="changeVoiceProfile()" aria-label="목소리 선택">
+          <option value="girl">👧 여자아이 목소리</option>
+          <option value="woman">👩 여자 어른 목소리</option>
+          <option value="boy">👦 남자아이 목소리</option>
+          <option value="man">👨 남자 어른 목소리</option>
+        </select>
+        <span class="voice-status" id="voiceStatusLabel" title="현재 연결된 음성">엔진 확인 중...</span>
+      </div>
+      <div class="star-badge">⭐ 별 스티커: <span id="starCount">0</span>개</div>
+    </div>
+  </header>
+
+  <nav id="mainNav">
+    <button type="button" class="nav-btn active" onclick="showTab('tab1', this)">1. 숫자 1~100</button>
+    <button type="button" class="nav-btn" onclick="showTab('tab2', this)">2. 덧셈·뺄셈</button>
+    <button type="button" class="nav-btn" onclick="showTab('tab3', this)">3. 구구단 (1~9단)</button>
+    <button type="button" class="nav-btn" onclick="showTab('tab4', this)">4. 수학 퀴즈</button>
+    <button type="button" class="nav-btn" onclick="showTab('tab5', this)">5. 나의 공부방</button>
+  </nav>
+
+  <main>
+    <!-- 1. 1~100 숫자 -->
+    <section id="tab1" class="section active">
+      <div id="numberListView">
+        <h2>🔢 1부터 100까지 숫자를 눌러 보고 소리를 들어보세요!</h2>
+        <h3>기본 숫자 (1 ~ 20)</h3>
+        <div class="grid-numbers" id="numGrid1To20"></div>
+        <h3>십 단위 숫자 (21 ~ 99)</h3>
+        <div class="grid-numbers" id="numGrid21To99"></div>
+        <h3>백 (100)</h3>
+        <div class="grid-numbers" id="numGrid100"></div>
+      </div>
+
+      <div id="numberSoloView" class="solo-view" style="display:none;">
+        <div class="back-bar"><button type="button" class="back-btn" onclick="closeNumberSolo()">← 뒤로 가기</button></div>
+        <div class="solo-big-char" id="soloNumValue">1</div>
+        <div class="solo-sub" id="soloNumKorean">일 · 하나</div>
+        <div class="dot-visual" id="soloNumDots"></div>
+        <button type="button" class="action-btn blue" id="soloNumSpeakBtn">🔊 소리 듣기</button>
+      </div>
+    </section>
+
+    <!-- 2. 한자리·두자리·세자리 더하기 빼기 -->
+    <section id="tab2" class="section">
+      <h2>➕➖ 자리수별 더하기와 빼기를 연습해요!</h2>
+      <div class="top-category-bar">
+        <div class="cat-tabs">
+          <button type="button" class="cat-btn active" onclick="setCalcMode('d1_add', this)">한자리 + 한자리</button>
+          <button type="button" class="cat-btn" onclick="setCalcMode('d1_sub', this)">한자리 - 한자리</button>
+          <button type="button" class="cat-btn" onclick="setCalcMode('d2_add', this)">두자리 + 두자리</button>
+          <button type="button" class="cat-btn" onclick="setCalcMode('d2_sub', this)">두자리 - 두자리</button>
+          <button type="button" class="cat-btn" onclick="setCalcMode('d3_add', this)">세자리 + 세자리</button>
+          <button type="button" class="cat-btn" onclick="setCalcMode('d3_sub', this)">세자리 - 세자리</button>
+        </div>
+      </div>
+
+      <div class="calc-card">
+        <div class="calc-mode-badge" id="calcModeBadge">한자리 씩 더하기 (1~9)</div>
+        <div class="problem-expr" id="calcExpr">3 + 4 = ?</div>
+        <div class="answer-box">
+          <input type="number" id="calcAnswerInput" class="answer-input" inputmode="numeric" placeholder="정답" onkeydown="if(event.key==='Enter') checkCalcAnswer()" />
+          <button type="button" class="action-btn green confirm-big-btn" onclick="checkCalcAnswer()">정답 확인</button>
+        </div>
+
+        <div class="handwrite-box">
+          <div class="handwrite-top-bar">
+            <button type="button" class="mini-btn" onclick="clearCalcHandwrite()">🧹 필기 지우기</button>
+            <span class="handwrite-title">✍️ 아래 네모 칸에 손가락이나 마우스로 직접 적어 보세요!</span>
+          </div>
+          <canvas id="calcHandwriteCanvas" width="500" height="180"></canvas>
+        </div>
+
+        <div class="numpad" aria-label="숫자 입력 패드">
+          <button type="button" class="pad-btn" onclick="appendCalcDigit('1')">1</button>
+          <button type="button" class="pad-btn" onclick="appendCalcDigit('2')">2</button>
+          <button type="button" class="pad-btn" onclick="appendCalcDigit('3')">3</button>
+          <button type="button" class="pad-btn" onclick="appendCalcDigit('4')">4</button>
+          <button type="button" class="pad-btn" onclick="appendCalcDigit('5')">5</button>
+          <button type="button" class="pad-btn" onclick="appendCalcDigit('6')">6</button>
+          <button type="button" class="pad-btn" onclick="appendCalcDigit('7')">7</button>
+          <button type="button" class="pad-btn" onclick="appendCalcDigit('8')">8</button>
+          <button type="button" class="pad-btn" onclick="appendCalcDigit('9')">9</button>
+          <button type="button" class="pad-btn" onclick="appendCalcDigit('0')">0</button>
+        </div>
+        <div>
+          <button type="button" class="pad-btn clear-btn" onclick="clearCalcInput()">⌫ 숫자 지우기</button>
+          <button type="button" class="action-btn blue" onclick="speakCalcProblem()">🔊 문제 듣기</button>
+          <button type="button" class="action-btn" onclick="toggleCalcHint()">💡 힌트 보기</button>
+          <button type="button" class="mini-btn" onclick="newCalcProblem()">🔄 새 문제</button>
+        </div>
+        <div class="hint-panel" id="calcHintPanel"></div>
+        <div class="feedback-text" id="calcFeedback"></div>
+      </div>
+    </section>
+
+    <!-- 3. 1단~9단 구구단 -->
+    <section id="tab3" class="section">
+      <h2>✖️ 1단부터 9단까지 신나는 구구단!</h2>
+      <div class="dan-selector" id="danSelector"></div>
+      <div style="text-align:center; margin-bottom:14px;">
+        <button type="button" class="action-btn blue" onclick="speakWholeDan()">🔊 이 단 전체 읽기</button>
+        <button type="button" class="action-btn green" onclick="startDanQuiz()">🎯 이 단 퀴즈 풀기</button>
+      </div>
+      <div class="gugu-grid" id="guguGrid"></div>
+    </section>
+
+    <!-- 4. 수학 퀴즈 -->
+    <section id="tab4" class="section">
+      <h2>🎯 문제를 보고 소리를 들으며 정답을 맞혀요!</h2>
+      <div class="quiz-box">
+        <div class="quiz-tag" id="quizTag">수학 퀴즈</div>
+        <div class="quiz-question" id="quizQuestion">5 + 3 = ?</div>
+        <button type="button" class="action-btn blue" onclick="playQuizHint()">🔊 문제 소리 듣기</button>
+        <div class="quiz-options" id="quizOptions"></div>
+        <p id="quizFeedback" style="font-size:1.4rem; margin-top:15px; min-height:30px;"></p>
+      </div>
+    </section>
+
+    <!-- 5. 나의 공부방 -->
+    <section id="tab5" class="section">
+      <h2>🏆 나의 수학 공부방</h2>
+      <div class="stats-card">
+        <h3>우리 아이 칭찬 스티커 판</h3>
+        <div style="font-size:1.3rem; margin:10px 0;">
+          🎯 맞힌 문제·퀴즈 수: <strong id="quizScore">0</strong>개
+        </div>
+        <div class="sticker-board" id="stickerBoard"></div>
+        <button type="button" class="action-btn" style="margin-top:20px; background:#888888; box-shadow:none;" onclick="resetProgress()">기록 초기화</button>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    var memoryStore = { stars: 0, quiz: 0, stickers: [] };
+    var progress = loadProgress();
+    var voiceProfile = 'girl';
+    var cachedVoices = [];
+
+    var voiceConfigs = {
+      girl: {
+        label: '여자아이',
+        sample: '안녕! 나는 여자아이 목소리야. 같이 신나게 수학 공부하자!',
+        rate: 1.06,
+        pitch: 1.72,
+        keywords: ['yuna', 'sora', 'jiyeon', 'female', 'woman', 'girl', 'zira']
+      },
+      woman: {
+        label: '여자 어른',
+        sample: '안녕하세요! 다정한 여자 어른 목소리로 읽어줄게요.',
+        rate: 0.92,
+        pitch: 1.05,
+        keywords: ['sun-hi', 'heami', 'female', 'woman', 'yuna']
+      },
+      boy: {
+        label: '남자아이',
+        sample: '안녕! 나는 남자아이 목소리야. 힘차게 숫자를 읽어보자!',
+        rate: 1.05,
+        pitch: 1.25,
+        keywords: ['hyunsu', 'male', 'man', 'boy', 'minsu', 'injoon']
+      },
+      man: {
+        label: '남자 어른',
+        sample: '안녕하세요! 듬직한 남자 어른 목소리로 또박또박 들려줄게요.',
+        rate: 0.84,
+        pitch: 0.6,
+        keywords: ['injoon', 'minsu', 'male', 'man', 'david']
+      }
+    };
+
+    function getKoreanVoices() {
+      var list = [];
+      for (var i = 0; i < cachedVoices.length; i++) {
+        var v = cachedVoices[i];
+        if (v.lang && v.lang.toLowerCase().indexOf('ko') === 0) list.push(v);
+      }
+      return list;
+    }
+
+    function refreshVoices() {
+      try {
+        if ('speechSynthesis' in window) {
+          cachedVoices = window.speechSynthesis.getVoices() || [];
+          updateVoiceStatusLabel();
+        }
+      } catch (e) {}
+    }
+
+    function updateVoiceStatusLabel() {
+      var el = document.getElementById('voiceStatusLabel');
+      if (!el) return;
+      var koVoices = getKoreanVoices();
+      var chosen = pickBestVoice(voiceProfile);
+      var cfg = voiceConfigs[voiceProfile] || voiceConfigs.girl;
+      if (!('speechSynthesis' in window)) {
+        el.innerHTML = '음성 미지원 브라우저';
+        return;
+      }
+      if (koVoices.length === 0) {
+        el.innerHTML = '한국어 음성 0개 · 톤조절(' + cfg.label + ')';
+      } else {
+        el.innerHTML = '한국어 ' + koVoices.length + '개 · ' + (chosen ? chosen.name : koVoices[0].name);
+      }
+    }
+
+    if ('speechSynthesis' in window) {
+      refreshVoices();
+      window.speechSynthesis.onvoiceschanged = refreshVoices;
+    }
+
+    function pickBestVoice(profileKey) {
+      var koVoices = getKoreanVoices();
+      if (koVoices.length === 0) return null;
+      var cfg = voiceConfigs[profileKey] || voiceConfigs.girl;
+      for (var k = 0; k < cfg.keywords.length; k++) {
+        var kw = cfg.keywords[k];
+        for (var j = 0; j < koVoices.length; j++) {
+          var vn = (koVoices[j].name || '').toLowerCase();
+          if (vn.indexOf(kw) !== -1) return koVoices[j];
+        }
+      }
+      if (koVoices.length >= 2 && (profileKey === 'man' || profileKey === 'boy')) {
+        for (var m = 0; m < koVoices.length; m++) {
+          var mName = (koVoices[m].name || '').toLowerCase();
+          if (mName.indexOf('male') !== -1 || mName.indexOf('minsu') !== -1 || mName.indexOf('injoon') !== -1) {
+            return koVoices[m];
+          }
+        }
+        return koVoices[koVoices.length - 1];
+      }
+      return koVoices[0];
+    }
+
+    function changeVoiceProfile() {
+      var sel = document.getElementById('voiceProfileSelect');
+      voiceProfile = sel ? sel.value : 'girl';
+      updateVoiceStatusLabel();
+      var cfg = voiceConfigs[voiceProfile] || voiceConfigs.girl;
+      speak(cfg.sample);
+    }
+
+    function loadProgress() {
+      try {
+        var raw = window.localStorage.getItem('mathPlaygroundV2');
+        if (raw) {
+          var parsed = JSON.parse(raw);
+          return {
+            stars: parsed.stars || 0,
+            quiz: (parsed.quiz || 0) + (parsed.written || 0),
+            stickers: parsed.stickers || []
+          };
+        }
+      } catch (e) {}
+      return memoryStore;
+    }
+
+    function saveProgress() {
+      memoryStore = progress;
+      try { window.localStorage.setItem('mathPlaygroundV2', JSON.stringify(progress)); } catch (e) {}
+    }
+
+    function playChime(ok) {
+      try {
+        var AC = window.AudioContext || window.webkitAudioContext;
+        if (!AC) return;
+        var ctx = new AC();
+        var freqs = ok ? [523.25, 659.25, 783.99, 1046.5] : [330, 261.63];
+        for (var i = 0; i < freqs.length; i++) {
+          var osc = ctx.createOscillator();
+          var gain = ctx.createGain();
+          osc.type = 'triangle';
+          osc.frequency.value = freqs[i];
+          var t = ctx.currentTime + i * 0.09;
+          gain.gain.setValueAtTime(0.14, t);
+          gain.gain.exponentialRampToValueAtTime(0.001, t + 0.24);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(t);
+          osc.stop(t + 0.25);
+        }
+      } catch (e) {}
+    }
+
+    function speak(text) {
+      try {
+        if (!('speechSynthesis' in window)) return;
+        refreshVoices();
+        window.speechSynthesis.cancel();
+        var u = new SpeechSynthesisUtterance(text);
+        u.lang = 'ko-KR';
+        var chosen = pickBestVoice(voiceProfile);
+        if (chosen) u.voice = chosen;
+        var cfg = voiceConfigs[voiceProfile] || voiceConfigs.girl;
+        u.rate = cfg.rate;
+        u.pitch = cfg.pitch;
+        setTimeout(function() {
+          try { window.speechSynthesis.speak(u); } catch (err) {}
+        }, 30);
+      } catch (e) {}
+    }
+
+    function speakForMath(text) {
+      var s = String(text)
+        .replace(/\+/g, ' 더하기 ')
+        .replace(/-/g, ' 빼기 ')
+        .replace(/×|\*/g, ' 곱하기 ')
+        .replace(/=/g, ' 는 ')
+        .replace(/\?/g, ' 얼마일까요 ');
+      speak(s);
+    }
+
+    /* ================= 1. 1~100 숫자 ================= */
+    var nativeSmall = ['', '하나', '둘', '셋', '넷', '다섯', '여섯', '일곱', '여덟', '아홉'];
+    var nativeTens = ['', '열', '스물', '서른', '마흔', '쉰', '예순', '일흔', '여든', '아흔'];
+    var sinoDigits = ['', '일', '이', '삼', '사', '오', '육', '칠', '팔', '구'];
+
+    function toSinoKorean(n) {
+      if (n === 100) return '백';
+      var t = Math.floor(n / 10);
+      var o = n % 10;
+      var out = '';
+      if (t > 0) out += (t === 1 ? '십' : sinoDigits[t] + '십');
+      if (o > 0) out += sinoDigits[o];
+      return out || '영';
+    }
+
+    function toNativeKorean(n) {
+      if (n === 100) return '백';
+      if (n >= 1 && n <= 9) return nativeSmall[n];
+      var t = Math.floor(n / 10);
+      var o = n % 10;
+      return (nativeTens[t] || '') + (nativeSmall[o] || '');
+    }
+
+    function openNumberSolo(n) {
+      document.getElementById('numberListView').style.display = 'none';
+      document.getElementById('numberSoloView').style.display = 'block';
+      document.getElementById('soloNumValue').innerHTML = String(n);
+      var sino = toSinoKorean(n);
+      var nat = (n <= 99) ? ' · ' + toNativeKorean(n) : '';
+      document.getElementById('soloNumKorean').innerHTML = sino + nat;
+
+      var dotsEl = document.getElementById('soloNumDots');
+      if (n <= 30) {
+        var dots = '';
+        for (var i = 0; i < n; i++) dots += '<span class="dot-item">🍎</span>';
+        dotsEl.innerHTML = dots;
+        dotsEl.style.display = 'flex';
+      } else {
+        dotsEl.innerHTML = '';
+        dotsEl.style.display = 'none';
+      }
+
+      document.getElementById('soloNumSpeakBtn').onclick = function() {
+        speak(n + ', ' + sino + (n <= 99 ? ', ' + toNativeKorean(n) : ''));
+      };
+      speak(n + '! ' + sino);
+    }
+
+    function closeNumberSolo() {
+      document.getElementById('numberSoloView').style.display = 'none';
+      document.getElementById('numberListView').style.display = 'block';
+    }
+
+    function initNumbers1To100() {
+      var g1 = document.getElementById('numGrid1To20');
+      var g2 = document.getElementById('numGrid21To99');
+      var g3 = document.getElementById('numGrid100');
+      g1.innerHTML = ''; g2.innerHTML = ''; g3.innerHTML = '';
+
+      for (var n = 1; n <= 100; n++) {
+        (function(num) {
+          var card = document.createElement('div');
+          var cls = 'num-card';
+          if (num === 100) cls += ' hundred';
+          else if (num > 20) cls += ' tens';
+          card.className = cls;
+          card.innerHTML = num + '<span class="num-sub">' + toSinoKorean(num) + '</span>';
+          card.onclick = function() { openNumberSolo(num); };
+          if (num <= 20) g1.appendChild(card);
+          else if (num <= 99) g2.appendChild(card);
+          else g3.appendChild(card);
+        })(n);
+      }
+    }
+
+    /* ================= 2. 한자리·두자리·세자리 더하기 빼기 ================= */
+    var calcMode = 'd1_add';
+    var currentCalc = { a: 3, b: 4, op: '+', ans: 7 };
+
+    var calcModeMeta = {
+      d1_add: '한자리 씩 더하기 (1~9)',
+      d1_sub: '한자리 씩 빼기 (1~9 · 답 1 이상)',
+      d2_add: '두자리 씩 더하기 (10~99)',
+      d2_sub: '두자리 씩 빼기 (10~99 · 답 1 이상)',
+      d3_add: '세자리 씩 더하기 (100~999)',
+      d3_sub: '세자리 씩 빼기 (100~999 · 답 1 이상)'
+    };
+
+    var hwCanvas = document.getElementById('calcHandwriteCanvas');
+    var hwCtx = hwCanvas.getContext('2d');
+    var isHwDrawing = false;
+
+    function clearCalcHandwrite() {
+      hwCtx.clearRect(0, 0, hwCanvas.width, hwCanvas.height);
+    }
+
+    function getHwPos(e) {
+      var r = hwCanvas.getBoundingClientRect();
+      var cx = (e.touches && e.touches[0]) ? e.touches[0].clientX : e.clientX;
+      var cy = (e.touches && e.touches[0]) ? e.touches[0].clientY : e.clientY;
+      return {
+        x: (cx - r.left) * (hwCanvas.width / r.width),
+        y: (cy - r.top) * (hwCanvas.height / r.height)
+      };
+    }
+
+    function startHwDraw(e) {
+      isHwDrawing = true;
+      var p = getHwPos(e);
+      hwCtx.beginPath();
+      hwCtx.moveTo(p.x, p.y);
+      hwCtx.lineWidth = 10;
+      hwCtx.lineCap = 'round';
+      hwCtx.lineJoin = 'round';
+      hwCtx.strokeStyle = '#FF5E5B';
+    }
+
+    function moveHwDraw(e) {
+      if (!isHwDrawing) return;
+      if (e.cancelable) e.preventDefault();
+      var p = getHwPos(e);
+      hwCtx.lineTo(p.x, p.y);
+      hwCtx.stroke();
+    }
+
+    function endHwDraw() {
+      isHwDrawing = false;
+    }
+
+    hwCanvas.addEventListener('mousedown', startHwDraw);
+    hwCanvas.addEventListener('mousemove', moveHwDraw);
+    window.addEventListener('mouseup', endHwDraw);
+    hwCanvas.addEventListener('touchstart', startHwDraw, { passive: false });
+    hwCanvas.addEventListener('touchmove', moveHwDraw, { passive: false });
+    window.addEventListener('touchend', endHwDraw);
+
+    function randInt(min, max) {
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    function setCalcMode(mode, btn) {
+      calcMode = mode;
+      var btns = document.querySelectorAll('#tab2 .cat-btn');
+      for (var i = 0; i < btns.length; i++) btns[i].classList.remove('active');
+      if (btn) btn.classList.add('active');
+      document.getElementById('calcModeBadge').innerHTML = calcModeMeta[mode] || '';
+      newCalcProblem();
+    }
+
+    function newCalcProblem() {
+      var a = 0, b = 0, op = '+', ans = 0;
+      if (calcMode === 'd1_add') {
+        a = randInt(1, 9); b = randInt(1, 9); op = '+'; ans = a + b;
+      } else if (calcMode === 'd1_sub') {
+        a = randInt(2, 9); b = randInt(1, a - 1); op = '-'; ans = a - b;
+      } else if (calcMode === 'd2_add') {
+        a = randInt(10, 79); b = randInt(10, 99 - a); op = '+'; ans = a + b;
+      } else if (calcMode === 'd2_sub') {
+        a = randInt(12, 99); b = randInt(10, a - 1); op = '-'; ans = a - b;
+      } else if (calcMode === 'd3_add') {
+        a = randInt(100, 699); b = randInt(100, 999 - a); op = '+'; ans = a + b;
+      } else if (calcMode === 'd3_sub') {
+        a = randInt(102, 999); b = randInt(100, a - 1); op = '-'; ans = a - b;
+      }
+
+      currentCalc = { a: a, b: b, op: op, ans: ans };
+      document.getElementById('calcExpr').innerHTML = a + ' ' + op + ' ' + b + ' = ?';
+      document.getElementById('calcAnswerInput').value = '';
+      document.getElementById('calcFeedback').innerHTML = '';
+      clearCalcHandwrite();
+      var hint = document.getElementById('calcHintPanel');
+      hint.style.display = 'none';
+      hint.innerHTML = '';
+    }
+
+    function appendCalcDigit(digit) {
+      var inp = document.getElementById('calcAnswerInput');
+      if (inp.value.length >= 4) return;
+      inp.value = inp.value + digit;
+    }
+
+    function clearCalcInput() {
+      var inp = document.getElementById('calcAnswerInput');
+      inp.value = inp.value.slice(0, -1);
+    }
+
+    function speakCalcProblem() {
+      speakForMath(currentCalc.a + ' ' + currentCalc.op + ' ' + currentCalc.b + ' 는 얼마일까요?');
+    }
+
+    function toggleCalcHint() {
+      var hint = document.getElementById('calcHintPanel');
+      if (hint.style.display === 'block') {
+        hint.style.display = 'none';
+        return;
+      }
+      var text = '';
+      if (currentCalc.op === '+') {
+        text = currentCalc.a + '에서 시작해서 ' + currentCalc.b + '만큼 앞으로 세어 보세요!';
+      } else {
+        text = currentCalc.a + '에서 ' + currentCalc.b + '만큼 덜어내면 1 이상이 남아요. 얼마가 남을까요?';
+      }
+      hint.innerHTML = '💡 ' + text;
+      hint.style.display = 'block';
+      speak(text);
+    }
+
+    function checkCalcAnswer() {
+      var val = parseInt(document.getElementById('calcAnswerInput').value, 10);
+      var fb = document.getElementById('calcFeedback');
+      if (isNaN(val)) {
+        fb.style.color = '#FF5E5B';
+        fb.innerHTML = '정답을 먼저 적어 주세요!';
+        speak('정답을 적어 주세요!');
+        return;
+      }
+      if (val === currentCalc.ans) {
+        playChime(true);
+        fb.style.color = '#2EC4B6';
+        fb.innerHTML = '🎉 정답이에요! ' + currentCalc.a + ' ' + currentCalc.op + ' ' + currentCalc.b + ' = ' + currentCalc.ans + ' (별 +1)';
+        speak('정답이에요! ' + currentCalc.ans + '!');
+        addReward('quiz');
+        setTimeout(newCalcProblem, 1200);
+      } else {
+        playChime(false);
+        fb.style.color = '#FF5E5B';
+        fb.innerHTML = '😅 아쉽지만 다시 한 번 생각해 볼까요?';
+        speak('다시 한 번 계산해 볼까요?');
+      }
+    }
+
+    /* ================= 3. 1단~9단 구구단 ================= */
+    var currentDan = 2;
+
+    function initGugudan() {
+      var sel = document.getElementById('danSelector');
+      sel.innerHTML = '';
+      for (var d = 1; d <= 9; d++) {
+        (function(dan) {
+          var b = document.createElement('button');
+          b.type = 'button';
+          b.className = 'dan-btn' + (dan === currentDan ? ' active' : '');
+          b.innerHTML = dan + '단';
+          b.onclick = function() {
+            currentDan = dan;
+            var all = sel.querySelectorAll('.dan-btn');
+            for (var k = 0; k < all.length; k++) all[k].classList.remove('active');
+            b.classList.add('active');
+            renderGugudan(dan);
+            speak(dan + '단 구구단이에요!');
+          };
+          sel.appendChild(b);
+        })(d);
+      }
+      renderGugudan(currentDan);
+    }
+
+    function renderGugudan(dan) {
+      var grid = document.getElementById('guguGrid');
+      grid.innerHTML = '';
+      for (var i = 1; i <= 9; i++) {
+        (function(mul) {
+          var prod = dan * mul;
+          var card = document.createElement('div');
+          card.className = 'gugu-card';
+          card.innerHTML =
+            '<div class="gugu-eq">' + dan + ' × ' + mul + ' =</div>' +
+            '<div class="gugu-ans">' + prod + '</div>' +
+            '<div class="gugu-mini-actions">' +
+              '<button type="button" class="tiny-btn" onclick="event.stopPropagation(); speakForMath(\'' + dan + ' 곱하기 ' + mul + ' 는 ' + prod + '\')">🔊 읽기</button>' +
+            '</div>';
+          card.onclick = function() {
+            speakForMath(dan + ' 곱하기 ' + mul + ' 는 ' + prod);
+          };
+          grid.appendChild(card);
+        })(i);
+      }
+    }
+
+    function speakWholeDan() {
+      var lines = [];
+      for (var i = 1; i <= 9; i++) {
+        lines.push(currentDan + ' 곱하기 ' + i + ' 는 ' + (currentDan * i));
+      }
+      speak(currentDan + '단! ' + lines.join(', '));
+    }
+
+    function startDanQuiz() {
+      var navBtn = document.querySelectorAll('#mainNav .nav-btn')[3];
+      showTab('tab4', navBtn);
+      generateQuiz(currentDan);
+    }
+
+    /* ================= 4. 수학 퀴즈 ================= */
+    var currentQuiz = null;
+    var quizAnswered = false;
+    var quizNextTimer = null;
+
+    function playQuizHint() {
+      if (currentQuiz) speakForMath(currentQuiz.spoken);
+    }
+
+    function generateQuiz(forcedDan) {
+      if (quizNextTimer) {
+        clearTimeout(quizNextTimer);
+        quizNextTimer = null;
+      }
+      quizAnswered = false;
+
+      var types = forcedDan ? ['gugu'] : ['d1_add', 'd1_sub', 'd2_add', 'd2_sub', 'd3_add', 'd3_sub', 'gugu'];
+      var t = types[randInt(0, types.length - 1)];
+      var qText = '', tagText = '', ans = 0, spoken = '';
+
+      if (t === 'd1_add') {
+        var a1 = randInt(1, 9), b1 = randInt(1, 9);
+        ans = a1 + b1; qText = a1 + ' + ' + b1 + ' = ?'; tagText = '한자리 덧셈 퀴즈'; spoken = a1 + ' 더하기 ' + b1;
+      } else if (t === 'd1_sub') {
+        var a2 = randInt(2, 9), b2 = randInt(1, a2 - 1);
+        ans = a2 - b2; qText = a2 + ' - ' + b2 + ' = ?'; tagText = '한자리 뺄셈 퀴즈'; spoken = a2 + ' 빼기 ' + b2;
+      } else if (t === 'd2_add') {
+        var a3 = randInt(10, 69), b3 = randInt(10, 89 - a3);
+        ans = a3 + b3; qText = a3 + ' + ' + b3 + ' = ?'; tagText = '두자리 덧셈 퀴즈'; spoken = a3 + ' 더하기 ' + b3;
+      } else if (t === 'd2_sub') {
+        var a4 = randInt(25, 99), b4 = randInt(10, a4 - 1);
+        ans = a4 - b4; qText = a4 + ' - ' + b4 + ' = ?'; tagText = '두자리 뺄셈 퀴즈'; spoken = a4 + ' 빼기 ' + b4;
+      } else if (t === 'd3_add') {
+        var a5 = randInt(100, 599), b5 = randInt(100, 899 - a5);
+        ans = a5 + b5; qText = a5 + ' + ' + b5 + ' = ?'; tagText = '세자리 덧셈 퀴즈'; spoken = a5 + ' 더하기 ' + b5;
+      } else if (t === 'd3_sub') {
+        var a6 = randInt(250, 999), b6 = randInt(100, a6 - 1);
+        ans = a6 - b6; qText = a6 + ' - ' + b6 + ' = ?'; tagText = '세자리 뺄셈 퀴즈'; spoken = a6 + ' 빼기 ' + b6;
+      } else {
+        var dan = forcedDan || randInt(1, 9);
+        var mul = randInt(1, 9);
+        ans = dan * mul; qText = dan + ' × ' + mul + ' = ?'; tagText = '구구단 ' + dan + '단 퀴즈'; spoken = dan + ' 곱하기 ' + mul;
+      }
+
+      currentQuiz = { ans: ans, spoken: spoken };
+      document.getElementById('quizTag').innerHTML = tagText;
+      document.getElementById('quizQuestion').innerHTML = qText;
+      document.getElementById('quizFeedback').innerHTML = '';
+
+      var optionSet = [ans];
+      while (optionSet.length < 4) {
+        var delta = randInt(-10, 10);
+        if (delta === 0) delta = randInt(1, 6);
+        var cand = ans + delta;
+        if (cand >= 1 && optionSet.indexOf(cand) === -1) optionSet.push(cand);
+      }
+      optionSet.sort(function() { return 0.5 - Math.random(); });
+
+      var box = document.getElementById('quizOptions');
+      box.innerHTML = '';
+      for (var i = 0; i < optionSet.length; i++) {
+        (function(optVal) {
+          var btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = 'quiz-opt-btn';
+          btn.innerHTML = String(optVal);
+          btn.onclick = function() { checkQuiz(optVal); };
+          box.appendChild(btn);
+        })(optionSet[i]);
+      }
+    }
+
+    function checkQuiz(ans) {
+      if (quizAnswered || !currentQuiz) return;
+      var fb = document.getElementById('quizFeedback');
+      if (ans === currentQuiz.ans) {
+        quizAnswered = true;
+        var opts = document.querySelectorAll('#quizOptions .quiz-opt-btn');
+        for (var i = 0; i < opts.length; i++) opts[i].disabled = true;
+        playChime(true);
+        fb.style.color = '#2EC4B6';
+        fb.innerHTML = '🎉 정답이에요! 다음 문제로 넘어가요!';
+        speak('정답! ' + currentQuiz.ans + '!');
+        addReward('quiz');
+        quizNextTimer = setTimeout(function() { generateQuiz(); }, 1200);
+      } else {
+        playChime(false);
+        fb.style.color = '#FF5E5B';
+        fb.innerHTML = '😅 다시 한 번 생각해 볼까요?';
+        speak('다시 한 번 골라보세요!');
+      }
+    }
+
+    /* ================= 5. 스티커 & 탭 전환 ================= */
+    var stickers = ['🦖', '🦄', '🚀', '👑', '🌈', '🐬', '🦁', '🍓', '🤖', '⚡'];
+    function addReward(t) {
+      progress.stars += 1;
+      if (t === 'quiz') progress.quiz += 1;
+      progress.stickers.push(stickers[Math.floor(Math.random() * stickers.length)]);
+      saveProgress();
+      updateStudyUI();
+    }
+
+    function updateStudyUI() {
+      document.getElementById('starCount').innerHTML = progress.stars;
+      document.getElementById('quizScore').innerHTML = progress.quiz;
+      document.getElementById('stickerBoard').innerHTML = progress.stickers.length
+        ? progress.stickers.join(' ')
+        : '아직 스티커가 없어요. 공부를 시작해 볼까요?';
+    }
+
+    function resetProgress() {
+      if (confirm('정말 모든 스티커와 기록을 초기화할까요?')) {
+        progress = { stars: 0, quiz: 0, stickers: [] };
+        saveProgress();
+        updateStudyUI();
+      }
+    }
+
+    function showTab(tabId, btn) {
+      var secs = document.querySelectorAll('.section');
+      for (var i = 0; i < secs.length; i++) secs[i].classList.remove('active');
+      var navs = document.querySelectorAll('#mainNav .nav-btn');
+      for (var j = 0; j < navs.length; j++) navs[j].classList.remove('active');
+      var target = document.getElementById(tabId);
+      if (target) target.classList.add('active');
+      if (btn) btn.classList.add('active');
+      if (tabId === 'tab1') closeNumberSolo();
+      if (tabId === 'tab2') newCalcProblem();
+      if (tabId === 'tab3') renderGugudan(currentDan);
+      if (tabId === 'tab4') generateQuiz();
+      if (tabId === 'tab5') updateStudyUI();
+    }
+
+    initNumbers1To100();
+    newCalcProblem();
+    initGugudan();
+    updateStudyUI();
+  </script>
+</body>
+</html>
