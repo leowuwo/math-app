@@ -26,16 +26,23 @@
     .back-bar { display: flex; justify-content: flex-start; margin-bottom: 14px; }
     .back-btn { background: #6C757D; color: #fff; border: none; padding: 10px 18px; border-radius: 14px; font-size: 1.1rem; cursor: pointer; box-shadow: 0 3px 0 #495057; }
 
-    /* 1~100 숫자 그리드 */
-    .grid-numbers { display: grid; grid-template-columns: repeat(auto-fill, minmax(74px, 1fr)); gap: 10px; margin-bottom: 20px; }
-    .num-card { background: #fff; border: 3px solid #4ECDC4; border-radius: 18px; padding: 12px 6px; text-align: center; font-size: 1.8rem; cursor: pointer; box-shadow: 0 4px 0 #3AB7AE; }
+    /* 1-1, 1-2, 1-3 숫자 탭 및 그리드 */
+    .sub-num-tabs { display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
+    .sub-num-btn { padding: 10px 16px; border-radius: 18px; border: 3px solid #FFD166; background: #fff; font-size: 1.05rem; cursor: pointer; color: #444; }
+    .sub-num-btn.active { background: #FF7A00; color: #fff; border-color: #D96500; }
+    .range-toolbar { background: #FFFDF7; border: 2px solid #FFE082; border-radius: 18px; padding: 12px; margin-bottom: 14px; display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 8px; }
+    .range-chip { padding: 7px 12px; border-radius: 14px; border: 2px solid #FFD166; background: #FFF9EC; font-size: 0.95rem; cursor: pointer; color: #5A3A00; }
+    .range-chip.active { background: #2EC4B6; color: #fff; border-color: #1F8E83; }
+    .grid-numbers { display: grid; grid-template-columns: repeat(auto-fill, minmax(84px, 1fr)); gap: 10px; margin-bottom: 20px; }
+    .num-card { background: #fff; border: 3px solid #4ECDC4; border-radius: 18px; padding: 12px 6px; text-align: center; font-size: 1.65rem; cursor: pointer; box-shadow: 0 4px 0 #3AB7AE; }
     .num-card.tens { border-color: #FF8C42; box-shadow: 0 4px 0 #E0732C; background: #FFFDF7; }
     .num-card.hundred { border-color: #9B5DE5; box-shadow: 0 4px 0 #7B3FC4; background: #FAF5FF; }
-    .num-sub { display: block; font-size: 0.82rem; color: #666; margin-top: 3px; }
+    .num-card.thousand { border-color: #3A86FF; box-shadow: 0 4px 0 #2667CC; background: #F0F7FF; }
+    .num-sub { display: block; font-size: 0.78rem; color: #666; margin-top: 3px; word-break: keep-all; }
 
     .solo-view { background: #fff; border: 4px solid #FFD166; border-radius: 28px; padding: 32px 20px; text-align: center; box-shadow: 0 8px 20px rgba(0,0,0,0.08); }
-    .solo-big-char { font-size: 6.5rem; line-height: 1.15; color: #FF7A00; margin: 10px 0; }
-    .solo-sub { font-size: 1.55rem; color: #555; margin-bottom: 18px; }
+    .solo-big-char { font-size: clamp(3.6rem, 11vw, 6.2rem); line-height: 1.15; color: #FF7A00; margin: 10px 0; }
+    .solo-sub { font-size: 1.45rem; color: #555; margin-bottom: 18px; }
     .dot-visual { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; max-width: 520px; margin: 0 auto 22px; padding: 14px; background: #FFF9EC; border-radius: 20px; border: 2px dashed #FFD166; }
     .dot-item { font-size: 1.4rem; line-height: 1.1; }
 
@@ -48,8 +55,7 @@
     .calc-mode-badge { display: inline-block; background: #E0F7FA; color: #00796B; padding: 5px 14px; border-radius: 14px; font-size: 1rem; margin-bottom: 10px; }
     .problem-expr { font-size: clamp(2.4rem, 7vw, 4.4rem); color: #FF7A00; margin: 10px 0 18px; letter-spacing: 2px; }
     .answer-box { display: flex; justify-content: center; align-items: center; gap: 14px; flex-wrap: wrap; margin-bottom: 18px; }
-    /* 정답 적기 칸 2배 확대 */
-    .answer-input { width: min(360px, 90vw); padding: 18px 20px; font-size: 4.2rem; line-height: 1.1; text-align: center; border: 4px solid #3A86FF; border-radius: 22px; outline: none; background: #F8FBFF; color: #1E3A8A; }
+    .answer-input { width: min(360px, 90vw); padding: 18px 20px; font-size: 3.4rem; line-height: 1.1; text-align: center; border: 4px solid #3A86FF; border-radius: 22px; outline: none; background: #F8FBFF; color: #1E3A8A; }
     .confirm-big-btn { padding: 20px 28px; font-size: 1.45rem; }
 
     /* 직접 필기 패드 */
@@ -83,10 +89,12 @@
 
     /* 퀴즈 & 공부방 */
     .quiz-box { background: #fff; border-radius: 24px; padding: 25px; text-align: center; box-shadow: 0 6px 15px rgba(0,0,0,0.08); }
-    .quiz-tag { display: inline-block; background: #FFF1D0; color: #D96500; padding: 4px 12px; border-radius: 12px; font-size: 1rem; margin-bottom: 8px; }
-    .quiz-question { font-size: clamp(2.2rem, 6.5vw, 3.8rem); color: #FF7A00; margin: 10px 0 14px; }
+    .quiz-status-bar { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 10px; margin-bottom: 10px; }
+    .quiz-tag { display: inline-block; background: #FFF1D0; color: #D96500; padding: 5px 14px; border-radius: 12px; font-size: 1.05rem; }
+    .quiz-streak { display: inline-block; background: #E0F2FE; color: #0369A1; padding: 5px 14px; border-radius: 12px; font-size: 1.05rem; }
+    .quiz-question { font-size: clamp(2rem, 6vw, 3.5rem); color: #FF7A00; margin: 12px 0 16px; }
     .quiz-options { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 18px; }
-    .quiz-opt-btn { background: #FFF9EC; border: 3px solid #FFD166; border-radius: 18px; padding: 18px 10px; font-size: 1.7rem; cursor: pointer; }
+    .quiz-opt-btn { background: #FFF9EC; border: 3px solid #FFD166; border-radius: 18px; padding: 18px 10px; font-size: 1.65rem; cursor: pointer; }
     .stats-card { background: #fff; border-radius: 24px; padding: 25px; text-align: center; box-shadow: 0 6px 15px rgba(0,0,0,0.08); }
     .sticker-board { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin-top: 20px; font-size: 2.5rem; background: #FFF5E4; padding: 20px; border-radius: 20px; min-height: 100px; }
   </style>
@@ -109,7 +117,7 @@
   </header>
 
   <nav id="mainNav">
-    <button type="button" class="nav-btn active" onclick="showTab('tab1', this)">1. 숫자 1~100</button>
+    <button type="button" class="nav-btn active" onclick="showTab('tab1', this)">1. 숫자 학습</button>
     <button type="button" class="nav-btn" onclick="showTab('tab2', this)">2. 덧셈·뺄셈</button>
     <button type="button" class="nav-btn" onclick="showTab('tab3', this)">3. 구구단 (1~9단)</button>
     <button type="button" class="nav-btn" onclick="showTab('tab4', this)">4. 수학 퀴즈</button>
@@ -117,16 +125,36 @@
   </nav>
 
   <main>
-    <!-- 1. 1~100 숫자 -->
+    <!-- 1. 숫자 학습 (1-1, 1-2, 1-3) -->
     <section id="tab1" class="section active">
       <div id="numberListView">
-        <h2>🔢 1부터 100까지 숫자를 눌러 보고 소리를 들어보세요!</h2>
-        <h3>기본 숫자 (1 ~ 20)</h3>
-        <div class="grid-numbers" id="numGrid1To20"></div>
-        <h3>십 단위 숫자 (21 ~ 99)</h3>
-        <div class="grid-numbers" id="numGrid21To99"></div>
-        <h3>백 (100)</h3>
-        <div class="grid-numbers" id="numGrid100"></div>
+        <h2>🔢 숫자를 눌러 보고 소리를 들어보세요!</h2>
+        <div class="sub-num-tabs">
+          <button type="button" class="sub-num-btn active" id="subTabBtn1_1" onclick="switchNumberSubTab('1-1', this)">1-1. 숫자 1~100</button>
+          <button type="button" class="sub-num-btn" id="subTabBtn1_2" onclick="switchNumberSubTab('1-2', this)">1-2. 숫자 101~1,000</button>
+          <button type="button" class="sub-num-btn" id="subTabBtn1_3" onclick="switchNumberSubTab('1-3', this)">1-3. 숫자 1,001~10,000</button>
+        </div>
+
+        <div id="numSubView1_1">
+          <h3>기본 숫자 (1 ~ 20)</h3>
+          <div class="grid-numbers" id="numGrid1To20"></div>
+          <h3>십 단위 숫자 (21 ~ 99)</h3>
+          <div class="grid-numbers" id="numGrid21To99"></div>
+          <h3>백 (100)</h3>
+          <div class="grid-numbers" id="numGrid100"></div>
+        </div>
+
+        <div id="numSubView1_2" style="display:none;">
+          <h3>1-2. 숫자 101 ~ 1,000</h3>
+          <div class="range-toolbar" id="rangeToolbar1_2"></div>
+          <div class="grid-numbers" id="numGrid101To1000"></div>
+        </div>
+
+        <div id="numSubView1_3" style="display:none;">
+          <h3>1-3. 숫자 1,001 ~ 10,000</h3>
+          <div class="range-toolbar" id="rangeToolbar1_3"></div>
+          <div class="grid-numbers" id="numGrid1001To10000"></div>
+        </div>
       </div>
 
       <div id="numberSoloView" class="solo-view" style="display:none;">
@@ -202,12 +230,16 @@
       <div class="gugu-grid" id="guguGrid"></div>
     </section>
 
-    <!-- 4. 수학 퀴즈 -->
+    <!-- 4. 수학 퀴즈 (두자리 20번 -> 세자리 20번 -> 네자리) -->
     <section id="tab4" class="section">
       <h2>🎯 문제를 보고 소리를 들으며 정답을 맞혀요!</h2>
       <div class="quiz-box">
-        <div class="quiz-tag" id="quizTag">수학 퀴즈</div>
-        <div class="quiz-question" id="quizQuestion">5 + 3 = ?</div>
+        <div class="quiz-status-bar">
+          <div class="quiz-tag" id="quizTag">두자리 더하기·빼기</div>
+          <div class="quiz-streak" id="quizProgressLabel">진행: 0 / 20문제</div>
+          <button type="button" class="mini-btn" onclick="resetQuizStageToTwoDigit()">↩ 두자리부터 다시</button>
+        </div>
+        <div class="quiz-question" id="quizQuestion">24 + 15 = ?</div>
         <button type="button" class="action-btn blue" onclick="playQuizHint()">🔊 문제 소리 듣기</button>
         <div class="quiz-options" id="quizOptions"></div>
         <p id="quizFeedback" style="font-size:1.4rem; margin-top:15px; min-height:30px;"></p>
@@ -406,33 +438,73 @@
       speak(s);
     }
 
-    /* ================= 1. 1~100 숫자 ================= */
+    function randInt(min, max) {
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    /* ================= 1. 숫자 학습 (1-1, 1-2, 1-3) ================= */
     var nativeSmall = ['', '하나', '둘', '셋', '넷', '다섯', '여섯', '일곱', '여덟', '아홉'];
     var nativeTens = ['', '열', '스물', '서른', '마흔', '쉰', '예순', '일흔', '여든', '아흔'];
     var sinoDigits = ['', '일', '이', '삼', '사', '오', '육', '칠', '팔', '구'];
+    var tenThousands = ['', '만', '이만', '삼만', '사만', '오만', '육만', '칠만', '팔만', '구만'];
+
+    function readUnderTenThousand(num) {
+      if (num === 0) return '';
+      var th = Math.floor(num / 1000);
+      var hu = Math.floor((num % 1000) / 100);
+      var te = Math.floor((num % 100) / 10);
+      var on = num % 10;
+      var out = '';
+      if (th > 0) out += (th === 1 ? '천' : sinoDigits[th] + '천');
+      if (hu > 0) out += (hu === 1 ? '백' : sinoDigits[hu] + '백');
+      if (te > 0) out += (te === 1 ? '십' : sinoDigits[te] + '십');
+      if (on > 0) out += sinoDigits[on];
+      return out;
+    }
 
     function toSinoKorean(n) {
-      if (n === 100) return '백';
-      var t = Math.floor(n / 10);
-      var o = n % 10;
-      var out = '';
-      if (t > 0) out += (t === 1 ? '십' : sinoDigits[t] + '십');
-      if (o > 0) out += sinoDigits[o];
-      return out || '영';
+      if (n === 0) return '영';
+      if (n < 10000) return readUnderTenThousand(n);
+      var man = Math.floor(n / 10000);
+      var rem = n % 10000;
+      var manStr = (man === 1) ? '만' : (readUnderTenThousand(man) + '만');
+      var remStr = rem > 0 ? ' ' + readUnderTenThousand(rem) : '';
+      return manStr + remStr;
     }
 
     function toNativeKorean(n) {
       if (n === 100) return '백';
       if (n >= 1 && n <= 9) return nativeSmall[n];
-      var t = Math.floor(n / 10);
-      var o = n % 10;
-      return (nativeTens[t] || '') + (nativeSmall[o] || '');
+      if (n >= 10 && n <= 99) {
+        var t = Math.floor(n / 10);
+        var o = n % 10;
+        return (nativeTens[t] || '') + (nativeSmall[o] || '');
+      }
+      return '';
+    }
+
+    var currentNumSubTab = '1-1';
+    var range101Start = 101;
+    var range1001Start = 1001;
+
+    function switchNumberSubTab(subKey, btn) {
+      currentNumSubTab = subKey;
+      var btns = document.querySelectorAll('.sub-num-btn');
+      for (var i = 0; i < btns.length; i++) btns[i].classList.remove('active');
+      if (btn) btn.classList.add('active');
+
+      document.getElementById('numSubView1_1').style.display = (subKey === '1-1') ? 'block' : 'none';
+      document.getElementById('numSubView1_2').style.display = (subKey === '1-2') ? 'block' : 'none';
+      document.getElementById('numSubView1_3').style.display = (subKey === '1-3') ? 'block' : 'none';
+
+      if (subKey === '1-2') renderRange101To1000(range101Start);
+      if (subKey === '1-3') renderRange1001To10000(range1001Start);
     }
 
     function openNumberSolo(n) {
       document.getElementById('numberListView').style.display = 'none';
       document.getElementById('numberSoloView').style.display = 'block';
-      document.getElementById('soloNumValue').innerHTML = String(n);
+      document.getElementById('soloNumValue').innerHTML = n.toLocaleString('ko-KR');
       var sino = toSinoKorean(n);
       var nat = (n <= 99) ? ' · ' + toNativeKorean(n) : '';
       document.getElementById('soloNumKorean').innerHTML = sino + nat;
@@ -459,6 +531,14 @@
       document.getElementById('numberListView').style.display = 'block';
     }
 
+    function createNumberCard(num, extraClass) {
+      var card = document.createElement('div');
+      card.className = 'num-card' + (extraClass ? ' ' + extraClass : '');
+      card.innerHTML = num.toLocaleString('ko-KR') + '<span class="num-sub">' + toSinoKorean(num) + '</span>';
+      card.onclick = function() { openNumberSolo(num); };
+      return card;
+    }
+
     function initNumbers1To100() {
       var g1 = document.getElementById('numGrid1To20');
       var g2 = document.getElementById('numGrid21To99');
@@ -466,18 +546,96 @@
       g1.innerHTML = ''; g2.innerHTML = ''; g3.innerHTML = '';
 
       for (var n = 1; n <= 100; n++) {
-        (function(num) {
-          var card = document.createElement('div');
-          var cls = 'num-card';
-          if (num === 100) cls += ' hundred';
-          else if (num > 20) cls += ' tens';
-          card.className = cls;
-          card.innerHTML = num + '<span class="num-sub">' + toSinoKorean(num) + '</span>';
-          card.onclick = function() { openNumberSolo(num); };
-          if (num <= 20) g1.appendChild(card);
-          else if (num <= 99) g2.appendChild(card);
-          else g3.appendChild(card);
-        })(n);
+        var cls = (n === 100) ? 'hundred' : ((n > 20) ? 'tens' : '');
+        var c = createNumberCard(n, cls);
+        if (n <= 20) g1.appendChild(c);
+        else if (n <= 99) g2.appendChild(c);
+        else g3.appendChild(c);
+      }
+    }
+
+    function initRange101To1000() {
+      var bar = document.getElementById('rangeToolbar1_2');
+      bar.innerHTML = '';
+      var starts = [101, 201, 301, 401, 501, 601, 701, 801, 901];
+      for (var i = 0; i < starts.length; i++) {
+        (function(st) {
+          var end = (st === 901) ? 1000 : (st + 99);
+          var btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = 'range-chip' + (st === range101Start ? ' active' : '');
+          btn.innerHTML = st + '~' + end.toLocaleString('ko-KR');
+          btn.onclick = function() {
+            range101Start = st;
+            var all = bar.querySelectorAll('.range-chip');
+            for (var k = 0; k < all.length; k++) all[k].classList.remove('active');
+            btn.classList.add('active');
+            renderRange101To1000(st);
+          };
+          bar.appendChild(btn);
+        })(starts[i]);
+      }
+      renderRange101To1000(range101Start);
+    }
+
+    function renderRange101To1000(startNum) {
+      var grid = document.getElementById('numGrid101To1000');
+      grid.innerHTML = '';
+      var endNum = (startNum === 901) ? 1000 : (startNum + 99);
+      for (var n = startNum; n <= endNum; n++) {
+        grid.appendChild(createNumberCard(n, n === 1000 ? 'thousand' : 'hundred'));
+      }
+    }
+
+    function initRange1001To10000() {
+      var bar = document.getElementById('rangeToolbar1_3');
+      bar.innerHTML = '';
+      var chunks = [
+        { s: 1001, e: 1200 }, { s: 1201, e: 1500 }, { s: 1501, e: 2000 },
+        { s: 2001, e: 3000 }, { s: 3001, e: 4000 }, { s: 4001, e: 5000 },
+        { s: 5001, e: 6000 }, { s: 6001, e: 7000 }, { s: 7001, e: 8000 },
+        { s: 8001, e: 9000 }, { s: 9001, e: 10000 }
+      ];
+      for (var i = 0; i < chunks.length; i++) {
+        (function(ch) {
+          var btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = 'range-chip' + (ch.s === range1001Start ? ' active' : '');
+          btn.innerHTML = ch.s.toLocaleString('ko-KR') + '~' + ch.e.toLocaleString('ko-KR');
+          btn.onclick = function() {
+            range1001Start = ch.s;
+            var all = bar.querySelectorAll('.range-chip');
+            for (var k = 0; k < all.length; k++) all[k].classList.remove('active');
+            btn.classList.add('active');
+            renderRange1001To10000(ch.s);
+          };
+          bar.appendChild(btn);
+        })(chunks[i]);
+      }
+      renderRange1001To10000(range1001Start);
+    }
+
+    function renderRange1001To10000(startNum) {
+      var grid = document.getElementById('numGrid1001To10000');
+      grid.innerHTML = '';
+      var found = null;
+      var chunks = [
+        { s: 1001, e: 1200 }, { s: 1201, e: 1500 }, { s: 1501, e: 2000 },
+        { s: 2001, e: 3000 }, { s: 3001, e: 4000 }, { s: 4001, e: 5000 },
+        { s: 5001, e: 6000 }, { s: 6001, e: 7000 }, { s: 7001, e: 8000 },
+        { s: 8001, e: 9000 }, { s: 9001, e: 10000 }
+      ];
+      for (var i = 0; i < chunks.length; i++) {
+        if (chunks[i].s === startNum) { found = chunks[i]; break; }
+      }
+      if (!found) found = chunks[0];
+      var span = found.e - found.s;
+      var step = (span <= 200) ? 1 : ((span <= 300) ? 2 : ((span <= 500) ? 5 : 10));
+      for (var n = found.s; n <= found.e; n += step) {
+        grid.appendChild(createNumberCard(n, 'thousand'));
+      }
+      if (found.e === 10000 && (found.e - found.s) % step !== 0) {
+        grid.appendChild(createNumberCard(10000, 'thousand'));
       }
     }
 
@@ -542,10 +700,6 @@
     hwCanvas.addEventListener('touchmove', moveHwDraw, { passive: false });
     window.addEventListener('touchend', endHwDraw);
 
-    function randInt(min, max) {
-      return Math.floor(Math.random() * (max - min + 1)) + min;
-    }
-
     function setCalcMode(mode, btn) {
       calcMode = mode;
       var btns = document.querySelectorAll('#tab2 .cat-btn');
@@ -583,7 +737,7 @@
 
     function appendCalcDigit(digit) {
       var inp = document.getElementById('calcAnswerInput');
-      if (inp.value.length >= 4) return;
+      if (inp.value.length >= 5) return;
       inp.value = inp.value + digit;
     }
 
@@ -699,10 +853,39 @@
       generateQuiz(currentDan);
     }
 
-    /* ================= 4. 수학 퀴즈 ================= */
+    /* ================= 4. 수학 퀴즈 (두자리 20번 -> 세자리 20번 -> 네자리) ================= */
+    var quizDigitStage = 2; // 2: 두자리, 3: 세자리, 4: 네자리
+    var quizStageCorrectCount = 0;
+    var QUIZ_PASS_TARGET = 20;
+
     var currentQuiz = null;
     var quizAnswered = false;
     var quizNextTimer = null;
+
+    function getQuizStageLabel(stage) {
+      if (stage === 2) return '두자리 더하기·빼기';
+      if (stage === 3) return '세자리 더하기·빼기';
+      return '네자리 더하기·빼기';
+    }
+
+    function updateQuizStatusUI() {
+      var tagEl = document.getElementById('quizTag');
+      var progEl = document.getElementById('quizProgressLabel');
+      if (!tagEl || !progEl) return;
+      tagEl.innerHTML = getQuizStageLabel(quizDigitStage);
+      if (quizDigitStage < 4) {
+        progEl.innerHTML = '진행: ' + quizStageCorrectCount + ' / ' + QUIZ_PASS_TARGET + '문제';
+      } else {
+        progEl.innerHTML = '최종 단계 (맞힌 문제: ' + quizStageCorrectCount + '개)';
+      }
+    }
+
+    function resetQuizStageToTwoDigit() {
+      quizDigitStage = 2;
+      quizStageCorrectCount = 0;
+      generateQuiz();
+      speak('두자리 더하기 빼기 퀴즈부터 다시 시작해요!');
+    }
 
     function playQuizHint() {
       if (currentQuiz) speakForMath(currentQuiz.spoken);
@@ -714,46 +897,85 @@
         quizNextTimer = null;
       }
       quizAnswered = false;
+      updateQuizStatusUI();
 
-      var types = forcedDan ? ['gugu'] : ['d1_add', 'd1_sub', 'd2_add', 'd2_sub', 'd3_add', 'd3_sub', 'gugu'];
-      var t = types[randInt(0, types.length - 1)];
       var qText = '', tagText = '', ans = 0, spoken = '';
 
-      if (t === 'd1_add') {
-        var a1 = randInt(1, 9), b1 = randInt(1, 9);
-        ans = a1 + b1; qText = a1 + ' + ' + b1 + ' = ?'; tagText = '한자리 덧셈 퀴즈'; spoken = a1 + ' 더하기 ' + b1;
-      } else if (t === 'd1_sub') {
-        var a2 = randInt(2, 9), b2 = randInt(1, a2 - 1);
-        ans = a2 - b2; qText = a2 + ' - ' + b2 + ' = ?'; tagText = '한자리 뺄셈 퀴즈'; spoken = a2 + ' 빼기 ' + b2;
-      } else if (t === 'd2_add') {
-        var a3 = randInt(10, 69), b3 = randInt(10, 89 - a3);
-        ans = a3 + b3; qText = a3 + ' + ' + b3 + ' = ?'; tagText = '두자리 덧셈 퀴즈'; spoken = a3 + ' 더하기 ' + b3;
-      } else if (t === 'd2_sub') {
-        var a4 = randInt(25, 99), b4 = randInt(10, a4 - 1);
-        ans = a4 - b4; qText = a4 + ' - ' + b4 + ' = ?'; tagText = '두자리 뺄셈 퀴즈'; spoken = a4 + ' 빼기 ' + b4;
-      } else if (t === 'd3_add') {
-        var a5 = randInt(100, 599), b5 = randInt(100, 899 - a5);
-        ans = a5 + b5; qText = a5 + ' + ' + b5 + ' = ?'; tagText = '세자리 덧셈 퀴즈'; spoken = a5 + ' 더하기 ' + b5;
-      } else if (t === 'd3_sub') {
-        var a6 = randInt(250, 999), b6 = randInt(100, a6 - 1);
-        ans = a6 - b6; qText = a6 + ' - ' + b6 + ' = ?'; tagText = '세자리 뺄셈 퀴즈'; spoken = a6 + ' 빼기 ' + b6;
-      } else {
-        var dan = forcedDan || randInt(1, 9);
+      if (forcedDan) {
         var mul = randInt(1, 9);
-        ans = dan * mul; qText = dan + ' × ' + mul + ' = ?'; tagText = '구구단 ' + dan + '단 퀴즈'; spoken = dan + ' 곱하기 ' + mul;
+        ans = forcedDan * mul;
+        qText = forcedDan + ' × ' + mul + ' = ?';
+        tagText = '구구단 ' + forcedDan + '단 퀴즈';
+        spoken = forcedDan + ' 곱하기 ' + mul;
+      } else {
+        var isAdd = (Math.random() < 0.5);
+        var a = 0, b = 0;
+        if (quizDigitStage === 2) {
+          if (isAdd) {
+            a = randInt(10, 79);
+            b = randInt(10, 99 - a);
+            ans = a + b;
+            qText = a + ' + ' + b + ' = ?';
+            spoken = a + ' 더하기 ' + b;
+          } else {
+            a = randInt(20, 99);
+            b = randInt(10, a - 1);
+            ans = a - b;
+            qText = a + ' - ' + b + ' = ?';
+            spoken = a + ' 빼기 ' + b;
+          }
+          tagText = '두자리 더하기·빼기';
+        } else if (quizDigitStage === 3) {
+          if (isAdd) {
+            a = randInt(100, 699);
+            b = randInt(100, 999 - a);
+            ans = a + b;
+            qText = a + ' + ' + b + ' = ?';
+            spoken = a + ' 더하기 ' + b;
+          } else {
+            a = randInt(200, 999);
+            b = randInt(100, a - 1);
+            ans = a - b;
+            qText = a + ' - ' + b + ' = ?';
+            spoken = a + ' 빼기 ' + b;
+          }
+          tagText = '세자리 더하기·빼기';
+        } else {
+          if (isAdd) {
+            a = randInt(1000, 6999);
+            b = randInt(1000, 9999 - a);
+            ans = a + b;
+            qText = a + ' + ' + b + ' = ?';
+            spoken = a + ' 더하기 ' + b;
+          } else {
+            a = randInt(2000, 9999);
+            b = randInt(1000, a - 1);
+            ans = a - b;
+            qText = a + ' - ' + b + ' = ?';
+            spoken = a + ' 빼기 ' + b;
+          }
+          tagText = '네자리 더하기·빼기';
+        }
       }
 
-      currentQuiz = { ans: ans, spoken: spoken };
+      currentQuiz = { ans: ans, spoken: spoken, isStageQuiz: !forcedDan };
       document.getElementById('quizTag').innerHTML = tagText;
       document.getElementById('quizQuestion').innerHTML = qText;
       document.getElementById('quizFeedback').innerHTML = '';
 
+      var spread = (quizDigitStage === 4) ? 25 : ((quizDigitStage === 3) ? 15 : 8);
       var optionSet = [ans];
-      while (optionSet.length < 4) {
-        var delta = randInt(-10, 10);
+      var guard = 0;
+      while (optionSet.length < 4 && guard < 120) {
+        guard++;
+        var delta = randInt(-spread, spread);
         if (delta === 0) delta = randInt(1, 6);
         var cand = ans + delta;
         if (cand >= 1 && optionSet.indexOf(cand) === -1) optionSet.push(cand);
+      }
+      while (optionSet.length < 4) {
+        var extra = ans + optionSet.length * 7;
+        if (optionSet.indexOf(extra) === -1) optionSet.push(extra);
       }
       optionSet.sort(function() { return 0.5 - Math.random(); });
 
@@ -778,12 +1000,39 @@
         quizAnswered = true;
         var opts = document.querySelectorAll('#quizOptions .quiz-opt-btn');
         for (var i = 0; i < opts.length; i++) opts[i].disabled = true;
+
         playChime(true);
-        fb.style.color = '#2EC4B6';
-        fb.innerHTML = '🎉 정답이에요! 다음 문제로 넘어가요!';
-        speak('정답! ' + currentQuiz.ans + '!');
         addReward('quiz');
-        quizNextTimer = setTimeout(function() { generateQuiz(); }, 1200);
+
+        if (currentQuiz.isStageQuiz) {
+          quizStageCorrectCount += 1;
+          if (quizDigitStage === 2 && quizStageCorrectCount >= QUIZ_PASS_TARGET) {
+            quizDigitStage = 3;
+            quizStageCorrectCount = 0;
+            updateQuizStatusUI();
+            fb.style.color = '#2EC4B6';
+            fb.innerHTML = '🏆 두자리 20문제 성공! 이제 세자리 더하기·빼기로 올라가요!';
+            speak('두자리 20문제를 모두 맞혔어요! 이제 세자리 더하기 빼기 문제로 올라갑니다!');
+          } else if (quizDigitStage === 3 && quizStageCorrectCount >= QUIZ_PASS_TARGET) {
+            quizDigitStage = 4;
+            quizStageCorrectCount = 0;
+            updateQuizStatusUI();
+            fb.style.color = '#2EC4B6';
+            fb.innerHTML = '👑 세자리 20문제 성공! 이제 네자리 더하기·빼기 단계예요!';
+            speak('세자리 20문제를 모두 맞혔어요! 이제 네자리 더하기 빼기 문제로 올라갑니다!');
+          } else {
+            updateQuizStatusUI();
+            fb.style.color = '#2EC4B6';
+            fb.innerHTML = '🎉 정답이에요! (' + quizStageCorrectCount + (quizDigitStage < 4 ? ' / ' + QUIZ_PASS_TARGET : '문제 완료') + ')';
+            speak('정답! ' + currentQuiz.ans + '!');
+          }
+        } else {
+          fb.style.color = '#2EC4B6';
+          fb.innerHTML = '🎉 정답이에요! 다음 문제로 넘어가요!';
+          speak('정답! ' + currentQuiz.ans + '!');
+        }
+
+        quizNextTimer = setTimeout(function() { generateQuiz(); }, 1350);
       } else {
         playChime(false);
         fb.style.color = '#FF5E5B';
@@ -834,6 +1083,8 @@
     }
 
     initNumbers1To100();
+    initRange101To1000();
+    initRange1001To10000();
     newCalcProblem();
     initGugudan();
     updateStudyUI();
