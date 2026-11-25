@@ -1101,7 +1101,7 @@
             '<div class="gugu-eq">' + dan + ' × ' + mul + ' =</div>' +
             '<div class="gugu-ans">' + prod + '</div>' +
             '<div class="gugu-mini-actions">' +
-              '<button type="button" class="tiny-btn" onclick="event.stopPropagation(); speakForMath('' + dan + ' 곱하기 ' + mul + ' 는 ' + prod + '')">🔊 읽기</button>' +
+              '<button type="button" class="tiny-btn" onclick="event.stopPropagation(); speakForMath(\'\' + dan + \' 곱하기 \' + mul + \' 는 \' + prod + \'\')">🔊 읽기</button>' +
             '</div>';
           card.onclick = function() {
             speakForMath(dan + ' 곱하기 ' + mul + ' 는 ' + prod);
@@ -1359,12 +1359,24 @@
       if (!skipHistoryPush) pushMathHistoryState();
     }
 
-    initNumbers1To100();
-    initRange101To1000();
-    initRange1001To10000();
-    newCalcProblem();
-    initGugudan();
-    updateStudyUI();
+    function bootMathPlayground() {
+      var initSteps = [
+        initNumbers1To100,
+        initRange101To1000,
+        initRange1001To10000,
+        newCalcProblem,
+        initGugudan,
+        updateStudyUI,
+        refreshVoices
+      ];
+      for (var i = 0; i < initSteps.length; i++) {
+        try { initSteps[i](); } catch (err) { console.error(err); }
+      }
+    }
+    bootMathPlayground();
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', bootMathPlayground);
+    }
     try {
       if (window.history && typeof window.history.replaceState === 'function') {
         window.history.replaceState({
