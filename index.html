@@ -105,9 +105,7 @@
     <div class="header-right">
       <div class="voice-wrap">
         <select id="voiceProfileSelect" class="voice-select" onchange="changeVoiceProfile()" aria-label="목소리 선택">
-          
           <option value="woman">👩 여자 어른 목소리</option>
-          
         </select>
         <span class="voice-status" id="voiceStatusLabel" title="현재 연결된 음성">엔진 확인 중...</span>
       </div>
@@ -260,6 +258,116 @@
   </main>
 
   <script>
+    var isHandlingPopState = false;
+
+    function captureMathNavSnapshot() {
+      var activeSec = document.querySelector('.section.active');
+      var tabId = (activeSec && activeSec.id) ? activeSec.id : 'tab1';
+      var soloOpen = false;
+      var soloNum = null;
+
+      if (tabId === 'tab1') {
+        var nSolo = document.getElementById('numberSoloView');
+        if (nSolo && nSolo.style.display !== 'none') {
+          var rawNum = (document.getElementById('soloNumValue').textContent || '').replace(/,/g, '').trim();
+          var parsedNum = parseInt(rawNum, 10);
+          if (!isNaN(parsedNum)) {
+            soloOpen = true;
+            soloNum = parsedNum;
+          }
+        }
+      }
+
+      return {
+        tabId: tabId,
+        numSubTab: currentNumSubTab,
+        range101: range101Start,
+        range1001: range1001Start,
+        soloOpen: soloOpen,
+        soloNum: soloNum
+      };
+    }
+
+    function isSameMathSnap(a, b) {
+      if (!a || !b) return false;
+      return (
+        a.tabId === b.tabId &&
+        a.numSubTab === b.numSubTab &&
+        a.range101 === b.range101 &&
+        a.range1001 === b.range1001 &&
+        Boolean(a.soloOpen) === Boolean(b.soloOpen) &&
+        a.soloNum === b.soloNum
+      );
+    }
+
+    function pushMathHistoryState() {
+      if (isHandlingPopState) return;
+      try {
+        if (!window.history || typeof window.history.pushState !== 'function') return;
+        var snap = captureMathNavSnapshot();
+        var prev = window.history.state;
+        if (prev && prev.__mathApp && isSameMathSnap(prev.snap, snap)) return;
+        window.history.pushState({
+          __mathApp: true,
+          snap: snap
+        }, '', window.location.href);
+      } catch (e) {}
+    }
+
+    function applyMathNavSnapshot(snap) {
+      if (!snap) return;
+      var targetTab = snap.tabId || 'tab1';
+      var map = { tab1: 0, tab2: 1, tab3: 2, tab4: 3, tab5: 4 };
+      var idx = (map[targetTab] !== undefined) ? map[targetTab] : 0;
+      var navBtn = document.querySelectorAll('#mainNav .nav-btn')[idx] || null;
+      showTab(targetTab, navBtn, true, true);
+
+      if (targetTab === 'tab1') {
+        if (snap.range101) range101Start = snap.range101;
+        if (snap.range1001) range1001Start = snap.range1001;
+        var subKey = snap.numSubTab || '1-1';
+        var subBtnMap = { '1-1': 'subTabBtn1_1', '1-2': 'subTabBtn1_2', '1-3': 'subTabBtn1_3' };
+        var subBtn = document.getElementById(subBtnMap[subKey] || 'subTabBtn1_1');
+        switchNumberSubTab(subKey, subBtn);
+
+        if (snap.soloOpen && snap.soloNum !== null && snap.soloNum !== undefined) {
+          openNumberSolo(snap.soloNum, true);
+        } else {
+          closeNumberSolo(true);
+        }
+      }
+    }
+
+    window.addEventListener('popstate', function(event) {
+      isHandlingPopState = true;
+      try {
+        if (event.state && event.state.__mathApp && event.state.snap) {
+          applyMathNavSnapshot(event.state.snap);
+        } else {
+          applyMathNavSnapshot({
+            tabId: 'tab1',
+            numSubTab: '1-1',
+            range101: 101,
+            range1001: 1001,
+            soloOpen: false,
+            soloNum: null
+          });
+        }
+      } finally {
+        setTimeout(function() { isHandlingPopState = false; }, 0);
+      }
+    });
+
+    window.addEventListener('keydown', function(event) {
+      if (event.altKey && event.key === 'ArrowLeft') {
+        var activeTag = document.activeElement ? document.activeElement.tagName.toLowerCase() : '';
+        if (activeTag !== 'input' && activeTag !== 'textarea' && activeTag !== 'select') {
+          event.preventDefault();
+          window.history.back();
+        }
+      }
+    });
+
     var memoryStore = { stars: 0, quiz: 0, stickers: [] };
     var progress = loadProgress();
     var voiceProfile = 'girl';
@@ -445,7 +553,6 @@
     var nativeSmall = ['', '하나', '둘', '셋', '넷', '다섯', '여섯', '일곱', '여덟', '아홉'];
     var nativeTens = ['', '열', '스물', '서른', '마흔', '쉰', '예순', '일흔', '여든', '아흔'];
     var sinoDigits = ['', '일', '이', '삼', '사', '오', '육', '칠', '팔', '구'];
-    var tenThousands = ['', '만', '이만', '삼만', '사만', '오만', '육만', '칠만', '팔만', '구만'];
 
     function readUnderTenThousand(num) {
       if (num === 0) return '';
@@ -500,7 +607,7 @@
       if (subKey === '1-3') renderRange1001To10000(range1001Start);
     }
 
-    function openNumberSolo(n) {
+    function openNumberSolo(n, skipHistoryPush) {
       document.getElementById('numberListView').style.display = 'none';
       document.getElementById('numberSoloView').style.display = 'block';
       document.getElementById('soloNumValue').innerHTML = n.toLocaleString('ko-KR');
@@ -523,11 +630,13 @@
         speak(n + ', ' + sino + (n <= 99 ? ', ' + toNativeKorean(n) : ''));
       };
       speak(n + '! ' + sino);
+      if (!skipHistoryPush) pushMathHistoryState();
     }
 
-    function closeNumberSolo() {
+    function closeNumberSolo(skipHistoryPush) {
       document.getElementById('numberSoloView').style.display = 'none';
       document.getElementById('numberListView').style.display = 'block';
+      if (!skipHistoryPush) pushMathHistoryState();
     }
 
     function createNumberCard(num, extraClass) {
@@ -853,7 +962,7 @@
     }
 
     /* ================= 4. 수학 퀴즈 (두자리 20번 -> 세자리 20번 -> 네자리) ================= */
-    var quizDigitStage = 2; // 2: 두자리, 3: 세자리, 4: 네자리
+    var quizDigitStage = 2;
     var quizStageCorrectCount = 0;
     var QUIZ_PASS_TARGET = 20;
 
@@ -1066,7 +1175,7 @@
       }
     }
 
-    function showTab(tabId, btn) {
+    function showTab(tabId, btn, skipReset, skipHistoryPush) {
       var secs = document.querySelectorAll('.section');
       for (var i = 0; i < secs.length; i++) secs[i].classList.remove('active');
       var navs = document.querySelectorAll('#mainNav .nav-btn');
@@ -1074,11 +1183,14 @@
       var target = document.getElementById(tabId);
       if (target) target.classList.add('active');
       if (btn) btn.classList.add('active');
-      if (tabId === 'tab1') closeNumberSolo();
-      if (tabId === 'tab2') newCalcProblem();
-      if (tabId === 'tab3') renderGugudan(currentDan);
-      if (tabId === 'tab4') generateQuiz();
-      if (tabId === 'tab5') updateStudyUI();
+      if (!skipReset) {
+        if (tabId === 'tab1') closeNumberSolo(true);
+        if (tabId === 'tab2') newCalcProblem();
+        if (tabId === 'tab3') renderGugudan(currentDan);
+        if (tabId === 'tab4') generateQuiz();
+        if (tabId === 'tab5') updateStudyUI();
+      }
+      if (!skipHistoryPush) pushMathHistoryState();
     }
 
     initNumbers1To100();
@@ -1087,6 +1199,21 @@
     newCalcProblem();
     initGugudan();
     updateStudyUI();
+    try {
+      if (window.history && typeof window.history.replaceState === 'function') {
+        window.history.replaceState({
+          __mathApp: true,
+          snap: {
+            tabId: 'tab1',
+            numSubTab: '1-1',
+            range101: 101,
+            range1001: 1001,
+            soloOpen: false,
+            soloNum: null
+          }
+        }, '', window.location.href);
+      }
+    } catch (e) {}
   </script>
 </body>
 </html>
