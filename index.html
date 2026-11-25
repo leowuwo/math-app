@@ -18,7 +18,7 @@
       flex-direction: column;
     }
 
-    /* 상단 고정 영역(제목바 + 탭 메뉴) */
+    /* 상단 고정 영역(제목바 + 탭 메뉴) - 모바일에서도 컴팩트하게 유지 */
     .top-fixed-area {
       position: sticky;
       top: 0;
@@ -35,16 +35,32 @@
       flex-direction: column;
       gap: 4px;
     }
+    .header-top-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 6px;
+    }
     .brand-title {
-      font-size: 1.08rem;
+      font-size: 1.05rem;
       line-height: 1.15;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
     }
+    .star-badge {
+      background: #FFD166;
+      color: #5A3A00;
+      padding: 3px 8px;
+      border-radius: 12px;
+      font-size: 0.82rem;
+      line-height: 1.1;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
 
-    /* 한글 앱 스타일: 목소리 선택 + 음성 이름 + 별 뱃지가 한 줄에 배치 */
-    .header-sub-row {
+    /* 3번째 사진 영역: 가로 1줄 배치 */
+    .voice-row {
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -63,13 +79,16 @@
       cursor: pointer;
       outline: none;
       flex: 0 0 auto;
+      max-width: 48%;
       white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
     .voice-status {
-      font-size: 0.74rem;
+      font-size: 0.72rem;
       line-height: 1.15;
       background: rgba(0,0,0,0.18);
-      padding: 3px 8px;
+      padding: 3px 7px;
       border-radius: 10px;
       color: #FFFDF7;
       flex: 1 1 auto;
@@ -77,72 +96,68 @@
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-      text-align: center;
-    }
-    .star-badge {
-      background: #FFD166;
-      color: #5A3A00;
-      padding: 3px 9px;
-      border-radius: 12px;
-      font-size: 0.82rem;
-      line-height: 1.15;
-      white-space: nowrap;
-      flex-shrink: 0;
+      text-align: right;
     }
 
-    /* 탭 메뉴: 모바일에서도 5개 탭이 깔끔하게 보이도록 배치 */
+    /* 탭 메뉴: 모바일에서 3열/5열 컴팩트 배치 */
     nav {
       display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      gap: 4px;
-      padding: 5px 6px;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 5px;
+      padding: 6px 8px;
       background: #FFF1D0;
       border-bottom: 1.5px solid #F7DDA4;
     }
     @media (min-width: 720px) {
       header {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
         padding: 8px 14px;
-        gap: 6px;
+        gap: 8px;
+      }
+      .header-top-row {
+        gap: 10px;
       }
       .brand-title {
         font-size: 1.2rem;
       }
+      .voice-row {
+        width: auto;
+        justify-content: flex-end;
+      }
       .voice-select {
-        font-size: 0.86rem;
+        max-width: none;
+        font-size: 0.85rem;
         padding: 4px 10px;
       }
       .voice-status {
-        max-width: 340px;
-        font-size: 0.8rem;
-        padding: 4px 10px;
+        max-width: 220px;
+        font-size: 0.78rem;
+        padding: 4px 9px;
       }
       .star-badge {
-        font-size: 0.9rem;
+        font-size: 0.92rem;
         padding: 4px 11px;
       }
       nav {
+        grid-template-columns: repeat(5, 1fr);
         gap: 6px;
-        padding: 6px 10px;
+        padding: 7px 10px;
       }
     }
     .nav-btn {
       background: #fff;
       border: 2px solid #FFD166;
-      border-radius: 10px;
-      padding: 5px 2px;
-      font-size: 0.78rem;
+      border-radius: 11px;
+      padding: 5px 4px;
+      font-size: 0.82rem;
       line-height: 1.15;
       cursor: pointer;
       color: #444;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-    }
-    @media (min-width: 420px) {
-      .nav-btn {
-        font-size: 0.86rem;
-        padding: 6px 4px;
-      }
     }
     .nav-btn.active {
       background: #FF7A00;
@@ -244,13 +259,15 @@
 <body>
   <div class="top-fixed-area" id="topFixedArea">
     <header>
-      <div class="brand-title">🧮 신나는 수학 놀이터</div>
-      <div class="header-sub-row">
+      <div class="header-top-row">
+        <div class="brand-title">🧮 수학 놀이터</div>
+        <div class="star-badge">⭐ <span id="starCount">0</span></div>
+      </div>
+      <div class="voice-row">
         <select id="voiceProfileSelect" class="voice-select" onchange="changeVoiceProfile()" aria-label="목소리 선택">
           <option value="woman">👩 여자 어른</option>
         </select>
-        <span class="voice-status" id="voiceStatusLabel" title="현재 연결된 음성">Microsoft Heami - Korean (...</span>
-        <div class="star-badge">⭐ 별: <span id="starCount">0</span>개</div>
+        <span class="voice-status" id="voiceStatusLabel" title="현재 연결된 음성">확인 중...</span>
       </div>
     </header>
 
@@ -577,8 +594,9 @@
       if (koVoices.length === 0) {
         el.textContent = '톤조절(' + cfg.label + ')';
       } else {
-        var vName = chosen ? chosen.name : koVoices[0].name;
-        el.textContent = vName;
+        var shortName = chosen ? chosen.name.replace(/Microsoft |Google |한국어/gi, '').trim() : '기본';
+        if (!shortName) shortName = '기본';
+        el.textContent = 'KO ' + koVoices.length + ' · ' + shortName;
       }
     }
 
@@ -1080,7 +1098,7 @@
             '<div class="gugu-eq">' + dan + ' × ' + mul + ' =</div>' +
             '<div class="gugu-ans">' + prod + '</div>' +
             '<div class="gugu-mini-actions">' +
-              '<button type="button" class="tiny-btn" onclick="event.stopPropagation(); speakForMath('' + dan + ' 곱하기 ' + mul + ' 는 ' + prod + '')">🔊 읽기</button>' +
+              '<button type="button" class="tiny-btn" onclick="event.stopPropagation(); speakForMath(\'' + dan + ' 곱하기 ' + mul + ' 는 ' + prod + '\')">🔊 읽기</button>' +
             '</div>';
           card.onclick = function() {
             speakForMath(dan + ' 곱하기 ' + mul + ' 는 ' + prod);
